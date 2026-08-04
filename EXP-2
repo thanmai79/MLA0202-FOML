@@ -1,8 +1,0 @@
-from sklearn.linear_model import LogisticRegression
-x=[[3,3],[2,1],[1,0],[3,3],[0,1]]
-y=[1,1,0,1,0]
-model=LogisticRegression()
-model.fit(x,y)
-print(model.intercept_)
-print(model.coef_)
-print(model.predict([[2,1]]))
