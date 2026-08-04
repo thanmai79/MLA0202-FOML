@@ -1,0 +1,19 @@
+import pandas as pd
+from sklearn.preprocessing import LabelEncoder
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import r2_score,mean_squared_error
+data=pd.read_csv("rent.csv")
+le=LabelEncoder()
+data["Location"]=le.fit_transform(data["Location"])
+x=data[["Area","Rooms","Location"]]
+y=data["Rent"]
+xtrain,xtest,ytrain,ytest=train_test_split(x,y,test_size=0.2,random_state=42)
+model=LinearRegression()
+model.fit(xtrain,ytrain)
+pred=model.predict(xtest)
+print("R2 Score:",r2_score(ytest,pred))
+print("Mean Squared Error:",mean_squared_error(ytest,pred))
+sample=pd.DataFrame([[1100,3,le.transform(["B"])[0]]],columns=["Area","Rooms","Location"])
+result=model.predict(sample)
+print("Predicted Rent:",result[0])
