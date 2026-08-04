@@ -1,8 +1,0 @@
-from sklearn.naive_bayes import BernoulliNB
-X=[[1,1],[1,0],[0,1],[1,1],[0,0]]
-y=["Yes","Yes","No","Yes","No"]
-model=BernoulliNB()
-model.fit(X,y)
-print(model.class_log_prior_)
-print(model.feature_log_prob_)
-print(model.predict([[1,0]]))
