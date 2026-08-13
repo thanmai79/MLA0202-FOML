@@ -1,0 +1,31 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import StandardScaler
+from sklearn.decomposition import PCA,FactorAnalysis,FastICA
+from sklearn.mixture import GaussianMixture
+name="THANMAI REDDY"
+regno="192425372"
+df=pd.read_csv("wine_samples.csv")
+X=df[["Alcohol","MalicAcid","Ash","Alcalinity","Magnesium","Phenols"]]
+X=StandardScaler().fit_transform(X)
+pca=PCA(n_components=2).fit_transform(X)
+fa=FactorAnalysis(n_components=2,random_state=42).fit_transform(X)
+ica=FastICA(n_components=2,random_state=42).fit_transform(X)
+gmm=GaussianMixture(n_components=2,random_state=42)
+clusters=gmm.fit_predict(pca)
+print("Name:",name)
+print("Reg No:",regno)
+print("\nPCA Results:")
+print(pca)
+print("\nFactor Analysis Results:")
+print(fa)
+print("\nICA Results:")
+print(ica)
+print("\nGMM Clusters:")
+print(clusters)
+print("\nOptimal Clusters: 2")
+plt.scatter(pca[:,0],pca[:,1],c=clusters)
+plt.xlabel("PCA 1")
+plt.ylabel("PCA 2")
+plt.title("Wine Clustering using GMM")
+plt.show()
