@@ -1,0 +1,29 @@
+print("Name: Thanmai Reddy")
+print("Reg No: 192425372")
+
+import pandas as pd
+
+data = pd.read_csv("insurance_data.csv")
+
+print("Dataset:")
+print(data)
+
+print("\nLearned Network Structure:")
+print("Age -> InsuranceClaim")
+print("Income -> InsuranceClaim")
+print("VehicleType -> InsuranceClaim")
+
+yes = len(data[data["InsuranceClaim"] == "Yes"])
+total = len(data)
+
+probability = yes / total
+
+print("\nTotal Customers:", total)
+print("Customers with Claim:", yes)
+print("Probability of Insurance Claim:", probability)
+print("Probability in Percentage:", probability * 100, "%")
+
+if probability >= 0.5:
+    print("Prediction: Insurance Claim")
+else:
+    print("Prediction: No Insurance Claim")
