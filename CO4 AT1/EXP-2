@@ -1,0 +1,24 @@
+print("Name: Thanmai Reddy")
+print("Reg No: 192425372")
+
+states = ["Sunny", "Cloudy", "Rainy"]
+
+start = [0.5, 0.3, 0.2]
+
+observation = "Wet"
+
+emission = {
+    "Sunny": 0.1,
+    "Cloudy": 0.3,
+    "Rainy": 0.5
+}
+
+probability = []
+
+for i in range(3):
+    probability.append(start[i] * emission[states[i]])
+
+weather = states[probability.index(max(probability))]
+
+print("Observation:", observation)
+print("Predicted Weather:", weather)
