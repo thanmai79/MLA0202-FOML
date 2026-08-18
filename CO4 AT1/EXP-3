@@ -1,0 +1,39 @@
+print("Name: Thanmai Reddy")
+print("Reg No: 192425372")
+
+import matplotlib.pyplot as plt
+
+image = [
+    [10, 20, 30],
+    [20, 100, 40],
+    [30, 40, 50]
+]
+
+new_image = [row[:] for row in image]
+
+new_image[1][1] = (
+    image[0][1] +
+    image[2][1] +
+    image[1][0] +
+    image[1][2]
+) // 4
+
+print("Original Image:")
+for row in image:
+    print(row)
+
+print("Updated Image:")
+for row in new_image:
+    print(row)
+
+plt.figure()
+plt.imshow(image, cmap="gray")
+plt.title("Original Image")
+plt.axis("off")
+plt.show()
+
+plt.figure()
+plt.imshow(new_image, cmap="gray")
+plt.title("Updated Image")
+plt.axis("off")
+plt.show()
