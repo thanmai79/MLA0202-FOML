@@ -1,0 +1,28 @@
+print("Name: Thanmai Reddy")
+print("Reg No: 192425372")
+
+import sklearn_crfsuite
+
+x = [
+    [{"word": "John"}, {"word": "bought"}, {"word": "Laptop"}],
+    [{"word": "Mary"}, {"word": "ordered"}, {"word": "Phone"}],
+    [{"word": "Ravi"}, {"word": "bought"}, {"word": "Tablet"}]
+]
+
+y = [
+    ["NAME", "O", "PRODUCT"],
+    ["NAME", "O", "PRODUCT"],
+    ["NAME", "O", "PRODUCT"]
+]
+
+model = sklearn_crfsuite.CRF()
+model.fit(x, y)
+
+test = [
+    [{"word": "David"}, {"word": "ordered"}, {"word": "Laptop"}]
+]
+
+result = model.predict(test)
+
+print("Sentence: David ordered Laptop")
+print("Predicted Labels:", result[0])
