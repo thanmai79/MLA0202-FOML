@@ -1,0 +1,43 @@
+print("Name: Thanmai Reddy")
+print("Reg No: 192425372")
+
+obesity = {
+    "Yes": 0.30,
+    "No": 0.70
+}
+
+high_sugar = {
+    "Yes": 0.40,
+    "No": 0.60
+}
+
+diabetes = {
+    ("Yes", "Yes"): 0.90,
+    ("Yes", "No"): 0.30,
+    ("No", "Yes"): 0.40,
+    ("No", "No"): 0.05
+}
+
+print("Obesity Probability:", obesity)
+print("High Blood Sugar Probability:", high_sugar)
+
+print("Diabetes Probability Table:")
+
+for key, value in diabetes.items():
+    print(key, ":", value)
+
+patient_obesity = "Yes"
+patient_sugar = "Yes"
+
+probability = diabetes[(patient_obesity, patient_sugar)]
+
+print("Patient Obesity:", patient_obesity)
+print("Patient High Blood Sugar:", patient_sugar)
+
+print("Probability of Diabetes:", probability)
+print("Probability in Percentage:", probability * 100, "%")
+
+if probability >= 0.5:
+    print("Prediction: Diabetes")
+else:
+    print("Prediction: No Diabetes")
