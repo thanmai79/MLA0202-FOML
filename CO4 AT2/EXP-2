@@ -1,0 +1,70 @@
+import numpy as np
+
+print("Name: Thanmai Reddy")
+print("Reg.No: 192425372")
+
+states=["Healthy","Warning","Failure"]
+
+observations=["Normal","Moderate","High"]
+
+transition=np.array([
+    [0.8,0.15,0.05],
+    [0.1,0.7,0.2],
+    [0.0,0.2,0.8]
+])
+
+emission=np.array([
+    [0.8,0.15,0.05],
+    [0.2,0.6,0.2],
+    [0.05,0.15,0.8]
+])
+
+start=np.array([0.7,0.2,0.1])
+
+sensor_observations=["Normal","Moderate","High","High","Moderate"]
+
+observation_map={"Normal":0,"Moderate":1,"High":2}
+
+obs=[observation_map[x] for x in sensor_observations]
+
+n=len(obs)
+
+prob=np.zeros((n,3))
+path=np.zeros((n,3),dtype=int)
+
+prob[0]=start*emission[:,obs[0]]
+
+for t in range(1,n):
+    for j in range(3):
+        values=prob[t-1]*transition[:,j]
+        path[t,j]=np.argmax(values)
+        prob[t,j]=np.max(values)*emission[j,obs[t]]
+
+hidden=np.zeros(n,dtype=int)
+hidden[-1]=np.argmax(prob[-1])
+
+for t in range(n-2,-1,-1):
+    hidden[t]=path[t+1,hidden[t+1]]
+
+print("\nSensor Observations:")
+print(sensor_observations)
+
+print("\nPredicted Machine States:")
+
+for i in range(n):
+    print("Observation",i+1,":",sensor_observations[i],
+          "->",states[hidden[i]])
+
+print("\nMachine State Sequence:")
+
+for i in hidden:
+    print(states[i],end=" -> ")
+
+print("\n")
+
+if 2 in hidden:
+    print("Maintenance Alert: Failure Risk Detected")
+elif 1 in hidden:
+    print("Maintenance Alert: Warning Condition Detected")
+else:
+    print("Machine Condition: Healthy")
