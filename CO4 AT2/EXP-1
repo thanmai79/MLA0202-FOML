@@ -1,0 +1,48 @@
+from pgmpy.models import DiscreteBayesianNetwork 
+from pgmpy.factors.discrete import TabularCPD 
+from pgmpy.inference import VariableElimination 
+import matplotlib.pyplot as plt 
+print("Name: Thanmai Reddy") 
+print("Reg.No: 192425372") 
+model=DiscreteBayesianNetwork([ 
+("Transaction","Fraudulent") 
+]) 
+cpd_transaction=TabularCPD( 
+variable="Transaction", 
+variable_card=2, 
+values=[[0.7],[0.3]] 
+) 
+cpd_fraud=TabularCPD( 
+variable="Fraudulent", 
+variable_card=2, 
+values=[ 
+[0.8,0.2], 
+[0.2,0.8] 
+], 
+evidence=["Transaction"], 
+evidence_card=[2] 
+) 
+model.add_cpds(cpd_transaction,cpd_fraud) 
+print("Bayesian Network Valid:",model.check_model()) 
+inference=VariableElimination(model) 
+result=inference.query( 
+variables=["Fraudulent"], 
+evidence={"Transaction":1} 
+) 
+print("\nFraud Prediction:") 
+print("Fraudulent(No):",round(result.values[0],4)) 
+print("Fraudulent(Yes):",round(result.values[1],4)) 
+probability=result.values[1]*100 
+print("\nProbability of Fraudulent Transaction:",round(probability,2),"%") 
+if result.values[1]>result.values[0]: 
+print("Final Prediction: FRAUDULENT") 
+else: 
+print("Final Prediction: NOT FRAUDULENT") 
+categories=["Not Fraudulent","Fraudulent"] 
+probabilities=[result.values[0]*100,result.values[1]*100] 
+plt.bar(categories,probabilities) 
+plt.xlabel("Transaction Type") 
+plt.ylabel("Probability (%)") 
+plt.title("Fraud Prediction Probability") 
+plt.ylim(0,100) 
+plt.show() 
