@@ -1,0 +1,76 @@
+import sklearn_crfsuite
+from sklearn_crfsuite import metrics
+
+print("Name: Thanmai Reddy")
+print("Reg.No: 192425372")
+
+def word_features(sentence,i):
+    word=sentence[i]
+    features={
+        "word.lower()":word.lower(),
+        "word.isupper()":word.isupper(),
+        "word.istitle()":word.istitle(),
+        "word.isdigit()":word.isdigit(),
+        "word.length":len(word)
+    }
+
+    if i>0:
+        features["prev_word"]=sentence[i-1]
+    else:
+        features["BOS"]=True
+
+    if i<len(sentence)-1:
+        features["next_word"]=sentence[i+1]
+    else:
+        features["EOS"]=True
+
+    return features
+
+train_sentences=[
+    ["John","bought","a","Dell","laptop","and","his","order","ID","is","ORD12345"],
+    ["Priya","received","a","Samsung","phone","with","order","ORD67890"],
+    ["Rahul","reported","a","HP","laptop","screen","issue","order","ORD11223"],
+    ["Anita","has","a","Lenovo","tablet","and","order","ORD44556"]
+]
+
+train_labels=[
+    ["B-CUSTOMER","O","O","B-PRODUCT","I-PRODUCT","O","O","O","B-ORDER","O","B-ORDER"],
+    ["B-CUSTOMER","O","O","B-PRODUCT","I-PRODUCT","O","B-ORDER","B-ORDER"],
+    ["B-CUSTOMER","O","O","B-PRODUCT","I-PRODUCT","B-ISSUE","I-ISSUE","O","B-ORDER"],
+    ["B-CUSTOMER","O","O","B-PRODUCT","I-PRODUCT","O","B-ORDER","B-ORDER"]
+]
+
+X_train=[[word_features(s,i) for i in range(len(s))] for s in train_sentences]
+
+crf=sklearn_crfsuite.CRF(
+    algorithm="lbfgs",
+    max_iterations=100,
+    all_possible_transitions=True
+)
+
+crf.fit(X_train,train_labels)
+
+test_sentence=[
+    "Ravi","ordered","a","Apple","iPhone","and",
+    "has","a","screen","issue","with","order","ORD99887"
+]
+
+X_test=[[word_features(test_sentence,i) for i in range(len(test_sentence))]]
+
+prediction=crf.predict(X_test)[0]
+
+print("\nCustomer Support Email:")
+print(" ".join(test_sentence))
+
+print("\nEntity Prediction:")
+
+for word,label in zip(test_sentence,prediction):
+    if label!="O":
+        print(word,"->",label)
+
+test_prediction=crf.predict(X_train)
+
+print("\nModel Accuracy:",
+      round(metrics.flat_accuracy_score(train_labels,test_prediction),2))
+
+print("\nEntity Extraction Completed")
