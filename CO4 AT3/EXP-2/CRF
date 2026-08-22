@@ -1,0 +1,26 @@
+import sklearn_crfsuite
+print("="*60)
+print("CRF - AUTONOMOUS VEHICLE ACTIVITY RECOGNITION")
+print("="*60)
+print("Name   : Thanmai Reddy")
+print("Reg No : 192425372")
+print("="*60)
+X=[
+[{"speed":"low","acceleration":"low","steering":"straight"},{"speed":"low","acceleration":"low","steering":"straight"},{"speed":"medium","acceleration":"medium","steering":"straight"},{"speed":"high","acceleration":"high","steering":"straight"},{"speed":"high","acceleration":"high","steering":"left"},{"speed":"medium","acceleration":"low","steering":"left"}],
+[{"speed":"low","acceleration":"low","steering":"straight"},{"speed":"medium","acceleration":"medium","steering":"straight"},{"speed":"high","acceleration":"high","steering":"right"},{"speed":"high","acceleration":"high","steering":"right"},{"speed":"medium","acceleration":"low","steering":"straight"},{"speed":"low","acceleration":"low","steering":"straight"}]
+]
+y=[
+["Walking","Walking","Running","Running","Running","Braking"],
+["Walking","Running","Running","Running","Braking","Walking"]
+]
+crf=sklearn_crfsuite.CRF(algorithm="lbfgs",c1=0.1,c2=0.1,max_iterations=100)
+crf.fit(X,y)
+predictions=crf.predict(X)
+print("Predicted Activity Sequences")
+print("-"*40)
+for i,sequence in enumerate(predictions):
+    print("Sequence",i+1,":"," -> ".join(sequence))
+print()
+print("Training Accuracy : %.2f%%"%(crf.score(X,y)*100))
+print("Recognition Status: Successful")
+print("="*60)
