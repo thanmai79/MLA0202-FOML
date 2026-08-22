@@ -1,0 +1,87 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+print("="*60)
+print("HIDDEN MARKOV MODEL - ACTIVITY RECOGNITION")
+print("="*60)
+print("Name   : Thanmai Reddy")
+print("Reg No : 192425372")
+print("="*60)
+
+activities=["Walking","Running","Braking"]
+
+observations=np.array([1.0,1.5,2.0,7.0,8.0,8.5,3.0,2.5,1.0])
+
+transition=np.array([
+    [0.7,0.2,0.1],
+    [0.1,0.8,0.1],
+    [0.2,0.2,0.6]
+])
+
+means=np.array([1.5,8.0,2.5])
+
+variances=np.array([0.5,0.5,0.5])
+
+initial=np.array([0.5,0.3,0.2])
+
+def emission_probability(value,state):
+    return np.exp(-((value-means[state])**2)/(2*variances[state]))/np.sqrt(2*np.pi*variances[state])
+
+n=len(observations)
+states=len(activities)
+
+probability=np.zeros((n,states))
+previous=np.zeros((n,states),dtype=int)
+
+for state in range(states):
+    probability[0,state]=initial[state]*emission_probability(observations[0],state)
+
+for t in range(1,n):
+    for state in range(states):
+        values=probability[t-1]*transition[:,state]
+        previous[t,state]=np.argmax(values)
+        probability[t,state]=np.max(values)*emission_probability(observations[t],state)
+
+best_state=np.argmax(probability[n-1])
+predicted_states=[best_state]
+
+for t in range(n-1,0,-1):
+    predicted_states.insert(0,previous[t,predicted_states[0]])
+
+print("Sensor Data")
+print("-"*40)
+print(observations)
+print()
+
+print("Predicted Activities")
+print("-"*40)
+
+for i,state in enumerate(predicted_states):
+    print("Time %d   Sensor %.1f   Activity: %s"%(i+1,observations[i],activities[state]))
+
+print()
+
+print("Final Activity Sequence")
+print("-"*40)
+print(" -> ".join(activities[state] for state in predicted_states))
+
+print()
+
+print("HMM Prediction Completed Successfully")
+print("="*60)
+
+plt.figure(figsize=(10,6))
+
+plt.plot(
+    range(1,n+1),
+    observations,
+    marker="o",
+    linewidth=2
+)
+
+plt.xlabel("Time")
+plt.ylabel("Sensor Value")
+plt.title("HMM Based Autonomous Vehicle Activity Recognition")
+plt.xticks(range(1,n+1))
+plt.grid(True)
+plt.show()
